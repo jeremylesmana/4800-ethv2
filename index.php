@@ -95,7 +95,7 @@ require_once "config.php";
                     <div class='card-body'>
                         <h5 class='card-title'>" . $row["listingName"]. "</h5>
                         <p class='card-text'>" . $row["listingDesc"]. "</p>
-                        <a href='#' class='btn btn-primary'>" . $row["listingPrice"]. " ETH</a><br><br>
+                        <a href='listing.php?listingID=" . $row["listingID"] . "' class='btn btn-primary'>" . $row["listingPrice"]. " ETH</a><br><br>
                         <p class='card-text'>Owned by: " . $row["listingOwner"]. "</p>
                     </div>
                 </div>'";
