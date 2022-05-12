@@ -56,7 +56,7 @@ require_once "config.php";
                 </div>";
             }
         } else {
-            echo "<h1>0 results</h1>";
+            echo "<h1 class='noResults'>0 results</h1>";
         }
         ?>
     </div>
