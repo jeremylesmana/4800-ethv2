@@ -1,41 +1,41 @@
 <?php
 // Include config file
 require_once "config.php";
- 
+
 // Define variables and initialize with empty values
-$username = $password = $confirm_password = "";
-$username_err = $password_err = $confirm_password_err = "";
- 
+$username = $password = $confirm_password = $wallet_id = "";
+$username_err = $password_err = $confirm_password_err = $wallet_id_err = "";
+
 // Processing form data when form is submitted
-if($_SERVER["REQUEST_METHOD"] == "POST"){
- 
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
     // Validate username
-    if(empty(trim($_POST["username"]))){
+    if (empty(trim($_POST["username"]))) {
         $username_err = "Please enter a username.";
-    } elseif(!preg_match('/^[a-zA-Z0-9_]+$/', trim($_POST["username"]))){
+    } elseif (!preg_match('/^[a-zA-Z0-9_]+$/', trim($_POST["username"]))) {
         $username_err = "Username can only contain letters, numbers, and underscores.";
-    } else{
+    } else {
         // Prepare a select statement
         $sql = "SELECT id FROM userdata WHERE username = ?";
-        
-        if($stmt = mysqli_prepare($link, $sql)){
+
+        if ($stmt = mysqli_prepare($link, $sql)) {
             // Bind variables to the prepared statement as parameters
             mysqli_stmt_bind_param($stmt, "s", $param_username);
-            
+
             // Set parameters
             $param_username = trim($_POST["username"]);
-            
+
             // Attempt to execute the prepared statement
-            if(mysqli_stmt_execute($stmt)){
+            if (mysqli_stmt_execute($stmt)) {
                 /* store result */
                 mysqli_stmt_store_result($stmt);
-                
-                if(mysqli_stmt_num_rows($stmt) == 1){
+
+                if (mysqli_stmt_num_rows($stmt) == 1) {
                     $username_err = "This username is already taken.";
-                } else{
+                } else {
                     $username = trim($_POST["username"]);
                 }
-            } else{
+            } else {
                 echo "Oops! Something went wrong. Please try again later.";
             }
 
@@ -43,45 +43,53 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             mysqli_stmt_close($stmt);
         }
     }
-    
+
     // Validate password
-    if(empty(trim($_POST["password"]))){
-        $password_err = "Please enter a password.";     
-    } elseif(strlen(trim($_POST["password"])) < 6){
+    if (empty(trim($_POST["password"]))) {
+        $password_err = "Please enter a password.";
+    } elseif (strlen(trim($_POST["password"])) < 6) {
         $password_err = "Password must have at least 6 characters.";
-    } else{
+    } else {
         $password = trim($_POST["password"]);
     }
-    
+
     // Validate confirm password
-    if(empty(trim($_POST["confirm_password"]))){
-        $confirm_password_err = "Please confirm password.";     
-    } else{
+    if (empty(trim($_POST["confirm_password"]))) {
+        $confirm_password_err = "Please confirm password.";
+    } else {
         $confirm_password = trim($_POST["confirm_password"]);
-        if(empty($password_err) && ($password != $confirm_password)){
+        if (empty($password_err) && ($password != $confirm_password)) {
             $confirm_password_err = "Password did not match.";
         }
     }
-    
-    // Check input errors before inserting in database
-    if(empty($username_err) && empty($password_err) && empty($confirm_password_err)){
-        
-        // Prepare an insert statement
-        $sql = "INSERT INTO userdata (username, password) VALUES (?, ?)";
-         
-        if($stmt = mysqli_prepare($link, $sql)){
+
+    // Validate wallet id 
+    if (empty(trim($_POST["wallet_id"]))) {
+        $wallet_id_err = "Please enter a wallet_id.";
+    } elseif (!preg_match('/^[a-zA-Z0-9_]+$/', trim($_POST["wallet_id"]))) {
+        $wallet_id_err = "That is not a valid wallet id!";
+    } else {
+        // Prepare a select statement
+        $sql = "SELECT id FROM userdata WHERE username = ?";
+
+        if ($stmt = mysqli_prepare($link, $sql)) {
             // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "ss", $param_username, $param_password);
-            
+            mysqli_stmt_bind_param($stmt, "s", $param_wallet_id);
+
             // Set parameters
-            $param_username = $username;
-            $param_password = $password; 
-            
+            $param_wallet_id = trim($_POST["wallet_id"]);
+
             // Attempt to execute the prepared statement
-            if(mysqli_stmt_execute($stmt)){
-                // Redirect to login page
-                header("location: login.php");
-            } else{
+            if (mysqli_stmt_execute($stmt)) {
+                /* store result */
+                mysqli_stmt_store_result($stmt);
+
+                if (mysqli_stmt_num_rows($stmt) > 0) {
+                    $wallet_id_err = "This wallet id is already taken.";
+                } else {
+                    $wallet_id = trim($_POST["wallet_id"]);
+                }
+            } else {
                 echo "Oops! Something went wrong. Please try again later.";
             }
 
@@ -89,14 +97,43 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             mysqli_stmt_close($stmt);
         }
     }
-    
+
+    // Check input errors before inserting in database
+    if (empty($username_err) && empty($password_err) && empty($confirm_password_err) && empty($wallet_id_err)) {
+
+        // Prepare an insert statement
+        $sql = "INSERT INTO userdata (username, password, walletID) VALUES (?, ?, ?)";
+
+        if ($stmt = mysqli_prepare($link, $sql)) {
+            // Bind variables to the prepared statement as parameters
+            mysqli_stmt_bind_param($stmt, "sss", $param_username, $param_password, $param_wallet_id);
+
+            // Set parameters
+            $param_username = $username;
+            $param_password = $password;
+            $param_wallet_id = $wallet_id;
+
+            // Attempt to execute the prepared statement
+            if (mysqli_stmt_execute($stmt)) {
+                // Redirect to login page
+                header("location: login.php");
+            } else {
+                echo "Oops! Something went wrong. Please try again later.";
+            }
+
+            // Close statement
+            mysqli_stmt_close($stmt);
+        }
+    }
+
     // Close connection
     mysqli_close($link);
 }
 ?>
- 
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Sign Up</title>
@@ -107,6 +144,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 
 </head>
+
 <body>
     <?php include("header.php") ?>
 
@@ -118,7 +156,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 <label>Username</label>
                 <input type="text" name="username" class="form-control <?php echo (!empty($username_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $username; ?>">
                 <span class="invalid-feedback"><?php echo $username_err; ?></span>
-            </div>    
+            </div>
             <div class="form-group">
                 <label>Password</label>
                 <input type="password" name="password" class="form-control <?php echo (!empty($password_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $password; ?>">
@@ -130,11 +168,17 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 <span class="invalid-feedback"><?php echo $confirm_password_err; ?></span>
             </div>
             <div class="form-group">
+                <label>Wallet ID</label>
+                <input type="text" name="wallet_id" class="form-control <?php echo (!empty($wallet_id_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $wallet_id; ?>">
+                <span class="invalid-feedback"><?php echo $wallet_id_err; ?></span>
+            </div>
+            <div class="form-group">
                 <input type="submit" class="btn btn-primary" value="Submit">
                 <input type="reset" class="btn btn-secondary ml-2" value="Reset">
             </div>
             <p>Already have an account? <a href="login.php">Login here</a>.</p>
         </form>
-    </div>    
+    </div>
 </body>
+
 </html>
