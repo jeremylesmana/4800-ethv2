@@ -1,0 +1,51 @@
+body {
+    background: rgb(44, 42, 89);
+    background: radial-gradient(circle, rgba(44, 42, 89, 1) 0%, rgba(0, 28, 34, 1) 48%, rgba(10, 10, 56, 1) 100%);
+
+    font: 14px "Montserrat";
+}
+
+.hero {
+    color: white;
+    margin: 0 auto;
+    font-family: "Montserrat", sans-serif;
+    text-align: center;
+}
+
+h1 {
+    font-size: 70px;
+}
+
+h2 {
+    color: #DDDDDD;
+}
+
+h4 {
+    color: #999999;
+}
+
+.cardList {
+    width: 75%;
+    margin: auto auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 18rem);
+    column-gap: 2rem;
+}
+
+.card {
+    margin: 20 auto;
+    text-align: center;
+    width: 18rem;
+}
+
+
+a {
+    color: #42bcf5;
+}
+
+.form {
+    width: 360px;
+    padding: 20px;
+    margin: 0 auto;
+    color: white;
+}

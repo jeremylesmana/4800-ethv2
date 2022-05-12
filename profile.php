@@ -1,8 +1,15 @@
 <?php
 session_start();
-require_once "config.php";
-?>
 
+require_once "config.php";
+
+// Check if the user is already logged in, if yes then redirect him to welcome page
+if (!(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true)) {
+    header("location: index.php");
+    exit;
+}
+
+?>
 <html>
 
 <head>
@@ -17,10 +24,23 @@ require_once "config.php";
 
 <body>
     <?php include("header.php"); ?>
+
+    <div class="hero" style="padding:10rem;">
+        <h1>Your Profile</h1>
+        <h2>
+            <?php print $_SESSION["username"];?>
+        </h2>
+        <?php
+        if (isset($_SESSION["loggedin"])) {
+            echo '<h4>Your NFTs</h4>';
+        } else {
+            echo '<h4>Log in or sign up today to get started!</h4>';
+        };
+        ?>
+    </div>
     <div class="cardList">
         <?php
-        $id = (int)$_GET["listingID"];
-        $sql = "SELECT * FROM listing WHERE listingID = " . $id . ";";
+        $sql = "SELECT * FROM listing WHERE listingOwnerID = " . $_SESSION["id"];
 
         $result = $link->query($sql);
 
@@ -29,7 +49,8 @@ require_once "config.php";
             while ($row = $result->fetch_assoc()) {
                 $user_query = "SELECT username FROM userdata WHERE id = " . $row["listingOwnerId"];
                 $user_result = $link->query($user_query)->fetch_assoc();
-                echo "<div class='card' style='width: 18rem;'>
+                echo "
+                <div class='card'>
                 <img src='" . $row["listingPictureURL"] . "' class='card-img-top' alt='Image not available'>
                     <div class='card-body'>
                         <h5 class='card-title'>" . $row["listingName"] . "</h5>
@@ -37,7 +58,7 @@ require_once "config.php";
                         <a href='listing.php?listingID=" . $row["listingID"] . "' class='btn btn-primary'>" . $row["listingPrice"] . " ETH</a><br><br>
                         <p class='card-text'>Owned by: " . $user_result["username"] . "</p>
                     </div>
-                </div>'";
+                </div>";
             }
         } else {
             echo "<h1>0 results</h1>";

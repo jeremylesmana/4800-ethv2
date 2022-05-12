@@ -102,50 +102,15 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     <title>Sign Up</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/header.css">
-    <style>
-        body{ 
-            font: 14px "Montserrat"; 
-            background: rgb(44,42,89);
-            background: radial-gradient(circle, rgba(44,42,89,1) 0%, rgba(0,28,34,1) 48%, rgba(10,10,56,1) 100%);
-        }
-        .wrapper{ 
-            width: 360px;
-            padding: 20px; 
-            margin: 0 auto;
-            color:white;
-        }
-        a{
-            color: #42bcf5;
-        }
-    </style>
+    <link rel="stylesheet" href="assets/main.scss">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+
 </head>
 <body>
-<div class="header">
-        <img src="assets/logo.png" width="300">
-        <div class="header">
-        <img src="assets/logo.png" width="300">
-        <div class="header-right">
-            <a class="active" href="index.php">Home</a>
-            <?php
-                if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
-                    echo '<a href="login.php">Create Listing</a>';
-                }
-                else {
-                    echo '<a href="create.php">Create Listing</a>';
-                }
-            ?>
-            <?php
-                if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
-                    echo '<a href="register.php" class="active">Register </a>';
-                }
-                else {
-                    echo '<a href="logout.php">Log Out</a>';
-                }
-            ?>
-        </div>
-    </div>
-    </div>
-    <div class="wrapper">
+    <?php include("header.php") ?>
+
+    <div class="form">
         <h2>Sign Up</h2>
         <p>Please fill this form to create an account.</p>
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
