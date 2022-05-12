@@ -1,15 +1,24 @@
 <?php
 session_start();
-
 require_once "config.php";
 
-
-
-
 ?>
-<html>
 
+<html>
 <head>
+    <style>
+        .searchHelper {
+            color:white;
+            text-align:center;
+            margin: 0 auto;
+            font-size: 30px;
+        }
+        
+        .noResults {
+            color:white;
+        }
+
+    </style>
     <title>RedemptionNFT - Home Page</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/header.css">
@@ -18,27 +27,34 @@ require_once "config.php";
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 
 </head>
-
 <body>
     <?php include("header.php"); ?>
 
-    <div class="hero" style="padding:10rem;">
-        <h1>BUY AND SELL</h1>
-        <h2>Physical items as NFTs</h2>
-        <?php
-        if (isset($_SESSION["loggedin"])) {
-            echo '<h4>Welcome back, ' . $_SESSION["username"] . '!</h4>';
-        } else {
-            echo '<h4>Log in or sign up today to get started!</h4>';
-        };
-        ?>
+    <br><br>
+    <p class="searchHelper">Search for your desired NFT here</p>
+
+    <form action="search.php" method="get">
+    <div class="input-group mb-3" style="width:500px;margin:0 auto;">
+        
+        <input name="q" type="text" class="form-control" placeholder="Search NFT here" aria-label="Search NFT here" aria-describedby="button-addon2">
+        <div class="input-group-append">
+            <button class="btn btn-info" type="submit" id="button-addon2">Search</button>
+        </div>
+        
     </div>
+    </form>
     <div class="cardList">
         <?php
-        $sql = "SELECT * FROM listing";
+        //if there's a query being searched already
+
+        if(isset($_GET["q"])) {
+            $searchQuery = $_GET["q"];
+            $sql = "SELECT * FROM listing WHERE (`listingName` LIKE '%".$searchQuery."%') OR (`listingDesc` LIKE '%".$searchQuery."%')";
+        } else {
+            $sql = "SELECT * FROM listing";
+        }
 
         $result = $link->query($sql);
-
         if ($result->num_rows > 0) {
             // output data of each row
             while ($row = $result->fetch_assoc()) {
@@ -56,7 +72,7 @@ require_once "config.php";
                 </div>";
             }
         } else {
-            echo "<h1>0 results</h1>";
+            echo "<h1 class='noResults'>0 results</h1>";
         }
         ?>
     </div>
