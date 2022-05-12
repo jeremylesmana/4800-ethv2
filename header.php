@@ -8,7 +8,8 @@
         </button>
         <div class="collapse navbar-collapse" id="main_nav">
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item active"> <a class="nav-link" href="index.php">Home </a> </li>
+                <li class="nav-item"> <a class="nav-link" href="index.php">Home </a> </li>
+                <li class="nav-item"> <a class="nav-link" href="search.php">Search Listing </a> </li>
                 <?php
                 if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
                     echo '<li class="nav-item"><a class="nav-link" href="login.php">Create Listing</a></li>';
