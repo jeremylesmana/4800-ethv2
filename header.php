@@ -14,7 +14,7 @@
                 if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
                     echo '<li class="nav-item"><a class="nav-link" href="login.php">Create Listing</a></li>';
                 } else {
-                    echo '<li class="nav-item"><a class="nav-link" href="create.php">Create Listing</a></li>';
+                    echo '<li class="nav-item"><a class="nav-link" href="create_listing.php">Create Listing</a></li>';
                 }
                 ?>
                 <?php

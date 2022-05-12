@@ -4,7 +4,7 @@ session_start();
 require_once "config.php";
 
 // Check if the user is already logged in, if yes then redirect him to welcome page
-if (!(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true)) {
+if ((isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === false)) {
     header("location: index.php");
     exit;
 }
@@ -28,15 +28,10 @@ if (!(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true)) {
     <div class="hero" style="padding:10rem;">
         <h1>Your Profile</h1>
         <h2>
-            <?php print $_SESSION["username"];?>
+            <?php print $_SESSION["username"]; ?>
         </h2>
-        <?php
-        if (isset($_SESSION["loggedin"])) {
-            echo '<h4>Your NFTs</h4>';
-        } else {
-            echo '<h4>Log in or sign up today to get started!</h4>';
-        };
-        ?>
+        <h4>Wallet ID: <?php print $_SESSION["wallet_id"]; ?></h4>
+        <h3>Your NFTs</h3>
     </div>
     <div class="cardList">
         <?php
