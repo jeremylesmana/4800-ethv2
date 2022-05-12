@@ -30,7 +30,7 @@ if ((isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === false)) {
         <h2>
             <?php print $_SESSION["username"]; ?>
         </h2>
-        <h4>Wallet ID: <?php print $_SESSION["wallet_id"]; ?></h4>
+        <h4>Wallet ID: <?php echo (($_SESSION["wallet_id"] ? $_SESSION["wallet_id"] : "No wallet ID" )); ?></h4>
         <h3>Your NFTs</h3>
     </div>
     <div class="cardList">
