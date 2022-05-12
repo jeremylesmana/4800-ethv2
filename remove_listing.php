@@ -27,6 +27,8 @@ if ($row = $result->fetch_assoc()) {
             // Close statement
             mysqli_stmt_close($stmt);
         }
+    } else {
+        include("error.php");
     }
 } 
 // header("location: index.php");
